@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../services/api';
 import { Plus, Check, ShieldAlert } from 'lucide-react';
 import { FuelLog, Vehicle, Driver } from '../services/mockData';
+import { formatCurrency } from '../utils/format';
 
 export const Fuel: React.FC = () => {
   const queryClient = useQueryClient();
@@ -144,7 +145,7 @@ export const Fuel: React.FC = () => {
                   <th className="px-6 py-4">Vehicle Plates</th>
                   <th className="px-6 py-4">Operator / Driver</th>
                   <th className="px-6 py-4">Volume (Liters)</th>
-                  <th className="px-6 py-4">Expenditure ($)</th>
+                  <th className="px-6 py-4">Expenditure (₹)</th>
                   <th className="px-6 py-4">Odometer Reading</th>
                   <th className="px-6 py-4">Fill Date</th>
                 </tr>
@@ -165,7 +166,7 @@ export const Fuel: React.FC = () => {
                         <td className="px-6 py-4 font-mono font-bold text-slate-800">{v?.registrationNumber}</td>
                         <td className="px-6 py-4 font-semibold text-slate-700">{d?.name || 'Unknown Operator'}</td>
                         <td className="px-6 py-4 font-mono">{log.liters.toLocaleString()} L</td>
-                        <td className="px-6 py-4 font-mono text-emerald-600 font-bold">${log.cost.toLocaleString()}</td>
+                        <td className="px-6 py-4 font-mono text-emerald-600 font-bold">{formatCurrency(log.cost)}</td>
                         <td className="px-6 py-4 font-mono">{log.odometerReading.toLocaleString()} Km</td>
                         <td className="px-6 py-4 font-mono">{log.date.split('T')[0]}</td>
                       </tr>
@@ -189,11 +190,11 @@ export const Fuel: React.FC = () => {
             </div>
             <div>
               <p className="text-xs text-slate-400 font-bold">TOTAL COST</p>
-              <p className="text-xl font-extrabold text-slate-800 mt-1">${totalCost.toLocaleString()}</p>
+              <p className="text-xl font-extrabold text-slate-800 mt-1">{formatCurrency(totalCost)}</p>
             </div>
             <div>
               <p className="text-xs text-slate-400 font-bold">AVG. COST / LITER</p>
-              <p className="text-xl font-extrabold text-slate-800 mt-1">${avgCostPerLiter.toFixed(2)}</p>
+              <p className="text-xl font-extrabold text-slate-800 mt-1">{formatCurrency(avgCostPerLiter)}</p>
             </div>
           </div>
         </div>
@@ -279,7 +280,7 @@ export const Fuel: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 mb-1.5">Fuel Cost ($)</label>
+                  <label className="block text-xs font-bold text-slate-500 mb-1.5">Fuel Cost (₹)</label>
                   <input
                     type="number"
                     value={cost}

@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../services/api';
 import { Search, Plus, Trash2, ShieldAlert, Check } from 'lucide-react';
 import { Vehicle } from '../services/mockData';
+import { formatCurrency } from '../utils/format';
 
 export const Fleet: React.FC = () => {
   const queryClient = useQueryClient();
@@ -268,7 +269,7 @@ export const Fleet: React.FC = () => {
               </div>
               <div className="p-3 bg-slate-50 rounded-2xl">
                 <p className="text-xs text-slate-400 font-bold">ACQUISITION COST</p>
-                <p className="font-semibold text-slate-800 mt-1 font-mono">₹{(selectedVehicle.capacity * 105000).toLocaleString()}</p>
+                <p className="font-semibold text-slate-800 mt-1 font-mono">{formatCurrency(selectedVehicle.capacity * 105000)}</p>
               </div>
               <div className="p-3 bg-slate-50 rounded-2xl">
                 <p className="text-xs text-slate-400 font-bold">ACQUIRED ON</p>

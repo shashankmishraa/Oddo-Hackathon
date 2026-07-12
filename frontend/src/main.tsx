@@ -5,6 +5,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { DashboardLayout } from './layouts/DashboardLayout';
 import { Login } from './pages/Login';
+import { Register } from './pages/Register';
+import { ForgotPassword } from './pages/ForgotPassword';
+import { ResetPassword } from './pages/ResetPassword';
 import { Dashboard } from './pages/Dashboard';
 import { Fleet } from './pages/Fleet';
 import { Drivers } from './pages/Drivers';
@@ -58,6 +61,30 @@ const router = createBrowserRouter([
     element: (
       <GuestRoute>
         <Login />
+      </GuestRoute>
+    ),
+  },
+  {
+    path: '/register',
+    element: (
+      <GuestRoute>
+        <Register />
+      </GuestRoute>
+    ),
+  },
+  {
+    path: '/forgot-password',
+    element: (
+      <GuestRoute>
+        <ForgotPassword />
+      </GuestRoute>
+    ),
+  },
+  {
+    path: '/reset-password',
+    element: (
+      <GuestRoute>
+        <ResetPassword />
       </GuestRoute>
     ),
   },

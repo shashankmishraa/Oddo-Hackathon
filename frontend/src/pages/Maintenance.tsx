@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../services/api';
 import { Plus, Check, ShieldAlert, CheckCircle } from 'lucide-react';
 import { MaintenanceLog, Vehicle } from '../services/mockData';
+import { formatCurrency } from '../utils/format';
 
 export const Maintenance: React.FC = () => {
   const queryClient = useQueryClient();
@@ -178,7 +179,7 @@ export const Maintenance: React.FC = () => {
                   <th className="px-6 py-4">Make / Model</th>
                   <th className="px-6 py-4">Repair Description</th>
                   <th className="px-6 py-4">Repair Date</th>
-                  <th className="px-6 py-4">Estimate Cost ($)</th>
+                  <th className="px-6 py-4">Estimate Cost (₹)</th>
                   <th className="px-6 py-4">Status</th>
                   <th className="px-6 py-4 text-center">Actions</th>
                 </tr>
@@ -205,7 +206,7 @@ export const Maintenance: React.FC = () => {
                         <td className="px-6 py-4">{v?.make} {v?.model.split(' (')[0]}</td>
                         <td className="px-6 py-4 font-medium text-slate-700">{log.description}</td>
                         <td className="px-6 py-4 font-mono">{log.date.split('T')[0]}</td>
-                        <td className="px-6 py-4 font-mono">${log.cost.toLocaleString()}</td>
+                        <td className="px-6 py-4 font-mono">{formatCurrency(log.cost)}</td>
                         <td className="px-6 py-4">
                           <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide uppercase ${getStatusBadge(log.status)}`}>
                             {log.status}
@@ -265,7 +266,7 @@ export const Maintenance: React.FC = () => {
               </div>
               <div className="p-3 bg-slate-50 rounded-2xl">
                 <p className="text-xs text-slate-400 font-bold">REPAIR ESTIMATE COST</p>
-                <p className="font-semibold text-slate-800 mt-1 font-mono">${selectedLog.cost.toLocaleString()}</p>
+                <p className="font-semibold text-slate-800 mt-1 font-mono">{formatCurrency(selectedLog.cost)}</p>
               </div>
               <div className="p-3 bg-slate-50 rounded-2xl">
                 <p className="text-xs text-slate-400 font-bold">ASSIGNED MECHANIC</p>
@@ -342,7 +343,7 @@ export const Maintenance: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 mb-1.5">Estimated Cost ($)</label>
+                  <label className="block text-xs font-bold text-slate-500 mb-1.5">Estimated Cost (₹)</label>
                   <input
                     type="number"
                     value={cost}
@@ -397,7 +398,7 @@ export const Maintenance: React.FC = () => {
 
             <form onSubmit={handleCloseMaintenance} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1.5">Final Repair Cost ($)</label>
+                <label className="block text-xs font-bold text-slate-500 mb-1.5">Final Repair Cost (₹)</label>
                 <input
                   type="number"
                   value={finalCost}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Truck, ShieldAlert } from 'lucide-react';
 
@@ -84,6 +84,11 @@ export const Login: React.FC = () => {
                   placeholder="••••••••"
                   className="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all duration-200"
                 />
+                <div className="flex justify-end mt-2">
+                  <Link to="/forgot-password" className="text-xs font-semibold text-primary hover:underline">
+                    Forgot Password?
+                  </Link>
+                </div>
               </div>
             </div>
 
@@ -99,6 +104,15 @@ export const Login: React.FC = () => {
               )}
             </button>
           </form>
+
+          <div className="mt-4 text-center">
+            <p className="text-xs text-slate-450">
+              New to TransitOps?{' '}
+              <Link to="/register" className="text-primary font-bold hover:underline">
+                Create Account
+              </Link>
+            </p>
+          </div>
 
           {/* Quick Login Helper Panel */}
           <div className="mt-8 border-t border-slate-800/80 pt-6 space-y-2">

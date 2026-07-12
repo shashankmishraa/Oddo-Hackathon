@@ -2,6 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../services/api';
 import { FileDown, FileBarChart, Compass, Gauge, DollarSign, BarChart3, ShieldAlert } from 'lucide-react';
+import { formatCurrency } from '../utils/format';
 
 interface ReportItem {
   vehicleId: string;
@@ -40,14 +41,14 @@ export const Reports: React.FC = () => {
       'Model',
       'Current Mileage (Km)',
       'Total Fuel (Liters)',
-      'Total Fuel Cost ($)',
+      'Total Fuel Cost (₹)',
       'Fuel Efficiency (Km/L)',
       'Total Trips Completed',
-      'Total Maintenance Cost ($)',
-      'Total Expenses ($)',
-      'Total Operational Cost ($)',
+      'Total Maintenance Cost (₹)',
+      'Total Expenses (₹)',
+      'Total Operational Cost (₹)',
       'Total Cargo Units Delivered',
-      'ROI Ratio (Cargo/Cost)'
+      'ROI Ratio (Cargo/₹)'
     ];
 
     const rows = reportData.map((i) => [
@@ -136,7 +137,7 @@ export const Reports: React.FC = () => {
           <div>
             <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Operations Cost</p>
             <p className="text-xl font-extrabold text-slate-950 mt-0.5">
-              {isLoading ? '...' : `$${totalOpsCost.toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
+              {isLoading ? '...' : formatCurrency(totalOpsCost)}
             </p>
           </div>
         </div>
@@ -160,7 +161,7 @@ export const Reports: React.FC = () => {
           <div>
             <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Average ROI Ratio</p>
             <p className="text-xl font-extrabold text-slate-950 mt-0.5">
-              {isLoading ? '...' : averageROI.toFixed(2)} Cargo/$
+              {isLoading ? '...' : averageROI.toFixed(2)} Cargo/₹
             </p>
           </div>
         </div>
@@ -205,10 +206,10 @@ export const Reports: React.FC = () => {
                         {row.fuelEfficiency > 0 ? `${row.fuelEfficiency.toFixed(2)} Km/L` : 'N/A'}
                       </td>
                       <td className="px-6 py-4 font-mono">{row.tripCount} dispatches</td>
-                      <td className="px-6 py-4 font-mono">${row.totalMaintenanceCost.toLocaleString()}</td>
-                      <td className="px-6 py-4 font-mono">${row.totalExpenses.toLocaleString()}</td>
+                      <td className="px-6 py-4 font-mono">{formatCurrency(row.totalMaintenanceCost)}</td>
+                      <td className="px-6 py-4 font-mono">{formatCurrency(row.totalExpenses)}</td>
                       <td className="px-6 py-4 font-mono font-bold text-emerald-600">
-                        ${row.totalOperationalCost.toLocaleString()}
+                        {formatCurrency(row.totalOperationalCost)}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-1.5 text-violet-600 font-bold font-mono">

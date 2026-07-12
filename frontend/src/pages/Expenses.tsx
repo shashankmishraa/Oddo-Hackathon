@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../services/api';
 import { Plus, Check, ShieldAlert } from 'lucide-react';
 import { Expense, Vehicle, Driver, Trip } from '../services/mockData';
+import { formatCurrency } from '../utils/format';
 
 export const Expenses: React.FC = () => {
   const queryClient = useQueryClient();
@@ -141,7 +142,7 @@ export const Expenses: React.FC = () => {
                 <tr className="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
                   <th className="px-6 py-4">Expense Category</th>
                   <th className="px-6 py-4">Description</th>
-                  <th className="px-6 py-4">Amount ($)</th>
+                  <th className="px-6 py-4">Amount (₹)</th>
                   <th className="px-6 py-4">Linked Asset</th>
                   <th className="px-6 py-4">Linked Operator</th>
                   <th className="px-6 py-4">Expense Date</th>
@@ -166,7 +167,7 @@ export const Expenses: React.FC = () => {
                           </span>
                         </td>
                         <td className="px-6 py-4 font-semibold text-slate-800">{exp.description}</td>
-                        <td className="px-6 py-4 font-mono text-emerald-600 font-bold">${exp.amount.toLocaleString()}</td>
+                        <td className="px-6 py-4 font-mono text-emerald-600 font-bold">{formatCurrency(exp.amount)}</td>
                         <td className="px-6 py-4 font-mono text-xs">{v?.registrationNumber || 'None'}</td>
                         <td className="px-6 py-4 font-semibold text-xs">{d?.name || 'None'}</td>
                         <td className="px-6 py-4 font-mono">{exp.date.split('T')[0]}</td>
@@ -206,7 +207,7 @@ export const Expenses: React.FC = () => {
             <form onSubmit={handleAddExpense} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 mb-1.5">Amount ($)</label>
+                  <label className="block text-xs font-bold text-slate-500 mb-1.5">Amount (₹)</label>
                   <input
                     type="number"
                     value={amount}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../services/api';
+import { formatCurrency } from '../utils/format';
 import {
   BarChart,
   Bar,
@@ -122,7 +123,7 @@ export const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Cost Analytics Chart */}
         <div className="lg:col-span-2 bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
-          <h2 className="text-lg font-bold text-slate-900 mb-6">Yearly Cost Analytics ($)</h2>
+          <h2 className="text-lg font-bold text-slate-900 mb-6">Yearly Cost Analytics (₹)</h2>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -132,6 +133,7 @@ export const Dashboard: React.FC = () => {
                 <Tooltip
                   contentStyle={{ backgroundColor: '#ffffff', borderColor: '#e2e8f0', borderRadius: '12px' }}
                   labelStyle={{ color: '#0f172a', fontWeight: 'bold' }}
+                  formatter={(value: any) => formatCurrency(value)}
                 />
                 <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
                 <Bar dataKey="Fuel Cost" fill="#3b82f6" radius={[4, 4, 0, 0]} />

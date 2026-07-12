@@ -6,6 +6,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  register: (payload: any) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -48,6 +49,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const register = async (payload: any) => {
+    const response = await api.post('/auth/register', payload);
+    if (response.data?.success) {
+      const { token, user: userData } = response.data.data;
+      localStorage.setItem('transitops_token', token);
+      setUser(userData);
+    } else {
+      throw new Error(response.data?.message || 'Registration failed');
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('transitops_token');
     setUser(null);
@@ -59,6 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user,
         loading,
         login,
+        register,
         logout,
         isAuthenticated: !!user,
       }}

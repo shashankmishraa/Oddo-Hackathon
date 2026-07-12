@@ -17,16 +17,19 @@ model Role {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  passwordHash String
-  firstName    String
-  lastName     String
-  roleId       String
-  role         Role     @relation(fields: [roleId], references: [id], onDelete: Restrict)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  driver       Driver?
+  id               String    @id @default(uuid())
+  email            String    @unique
+  passwordHash     String
+  firstName        String
+  lastName         String
+  contactNumber    String?
+  roleId           String
+  role             Role      @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  driver           Driver?
 }
 
 model Vehicle {
