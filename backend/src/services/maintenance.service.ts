@@ -6,8 +6,15 @@ const prisma = new PrismaClient();
 const maintenanceRepo = new MaintenanceRepository();
 
 export class MaintenanceService {
-  async getAllLogs(): Promise<MaintenanceLog[]> {
-    return maintenanceRepo.findAll();
+  async getAllLogs(options: any) {
+    const { data, total } = await maintenanceRepo.findAll(options);
+    return {
+      data,
+      total,
+      page: options.page,
+      limit: options.limit,
+      totalPages: Math.ceil(total / options.limit),
+    };
   }
 
   async getLogDetails(id: string): Promise<MaintenanceLog> {

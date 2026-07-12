@@ -6,8 +6,15 @@ const prisma = new PrismaClient();
 const expenseRepo = new ExpenseRepository();
 
 export class ExpenseService {
-  async getAllExpenses(): Promise<Expense[]> {
-    return expenseRepo.findAll();
+  async getAllExpenses(options: any) {
+    const { data, total } = await expenseRepo.findAll(options);
+    return {
+      data,
+      total,
+      page: options.page,
+      limit: options.limit,
+      totalPages: Math.ceil(total / options.limit),
+    };
   }
 
   async getExpenseDetails(id: string): Promise<Expense> {

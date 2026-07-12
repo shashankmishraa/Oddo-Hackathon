@@ -14,6 +14,9 @@ import reportRoutes from './report.routes';
 
 const router = Router();
 
+import { getAllDocuments } from '../controllers/document.controller';
+import { authenticate } from '../middlewares/auth';
+
 router.use('/auth', authRoutes);
 router.use('/vehicles', fleetRoutes);
 router.use('/drivers', driverRoutes);
@@ -26,5 +29,6 @@ router.use('/expenses', expenseRoutes);
 router.use('/analytics', analyticsRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/reports', reportRoutes);
+router.get('/documents', authenticate, getAllDocuments);
 
 export default router;

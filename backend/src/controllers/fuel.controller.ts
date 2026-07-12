@@ -2,12 +2,26 @@ import { Request, Response, NextFunction } from 'express';
 import { FuelService } from '../services/fuel.service';
 import { sendSuccess } from '../utils/response';
 
+import { parseQueryParams } from '../utils/queryHelper';
+
 const fuelService = new FuelService();
 
 export const getFuelLogs = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const logs = await fuelService.getAllLogs();
-    return sendSuccess(res, logs, 'Fuel logs retrieved successfully');
+    const parsedOptions = parseQueryParams(req);
+    const result = await fuelService.getAllLogs({
+      search: parsedOptions.search,
+      vehicleId: parsedOptions.filters.vehicleId,
+      driverId: parsedOptions.filters.driverId,
+      dateRange: parsedOptions.filters.dateRange,
+      sortBy: parsedOptions.sortBy,
+      sortOrder: parsedOptions.sortOrder,
+      skip: parsedOptions.skip,
+      take: parsedOptions.take,
+      page: parsedOptions.page,
+      limit: parsedOptions.limit,
+    });
+    return sendSuccess(res, result, 'Fuel logs retrieved successfully');
   } catch (error) {
     return next(error);
   }

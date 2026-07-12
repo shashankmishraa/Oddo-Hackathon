@@ -6,8 +6,15 @@ const prisma = new PrismaClient();
 const fuelRepo = new FuelRepository();
 
 export class FuelService {
-  async getAllLogs(): Promise<FuelLog[]> {
-    return fuelRepo.findAll();
+  async getAllLogs(options: any) {
+    const { data, total } = await fuelRepo.findAll(options);
+    return {
+      data,
+      total,
+      page: options.page,
+      limit: options.limit,
+      totalPages: Math.ceil(total / options.limit),
+    };
   }
 
   async getLogDetails(id: string): Promise<FuelLog> {

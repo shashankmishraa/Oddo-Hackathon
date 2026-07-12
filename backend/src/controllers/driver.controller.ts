@@ -3,13 +3,24 @@ import { DriverService } from '../services/driver.service';
 import { sendSuccess } from '../utils/response';
 import { DriverStatus } from '../constants/enums';
 
+import { parseQueryParams } from '../utils/queryHelper';
+
 const driverService = new DriverService();
 
 export const getDrivers = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { status } = req.query;
-    const drivers = await driverService.listDrivers(status as DriverStatus);
-    return sendSuccess(res, drivers, 'Driver roster retrieved successfully');
+    const parsedOptions = parseQueryParams(req);
+    const result = await driverService.listDrivers({
+      search: parsedOptions.search,
+      status: parsedOptions.filters.status,
+      sortBy: parsedOptions.sortBy,
+      sortOrder: parsedOptions.sortOrder,
+      skip: parsedOptions.skip,
+      take: parsedOptions.take,
+      page: parsedOptions.page,
+      limit: parsedOptions.limit,
+    });
+    return sendSuccess(res, result, 'Driver roster retrieved successfully');
   } catch (error) {
     return next(error);
   }

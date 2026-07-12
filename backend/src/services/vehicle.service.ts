@@ -6,8 +6,15 @@ import { AppError } from '../middlewares/errorHandler';
 const vehicleRepo = new VehicleRepository();
 
 export class VehicleService {
-  async getAllVehicles(status?: string): Promise<Vehicle[]> {
-    return vehicleRepo.findAll(status);
+  async getAllVehicles(options: any) {
+    const { data, total } = await vehicleRepo.findAll(options);
+    return {
+      data,
+      total,
+      page: options.page,
+      limit: options.limit,
+      totalPages: Math.ceil(total / options.limit),
+    };
   }
 
   async getVehicleDetails(id: string): Promise<Vehicle> {

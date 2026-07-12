@@ -4,11 +4,46 @@ import { VehicleStatus } from '../constants/enums';
 const prisma = new PrismaClient();
 
 export class VehicleRepository {
-  async findAll(status?: string): Promise<Vehicle[]> {
-    return prisma.vehicle.findMany({
-      where: status ? { status } : {},
-      orderBy: { createdAt: 'desc' },
+  async findAll(options: {
+    search?: string;
+    status?: string;
+    region?: string;
+    sortBy: string;
+    sortOrder: 'asc' | 'desc';
+    skip: number;
+    take: number;
+  }) {
+    const { search, status, region, sortBy, sortOrder, skip, take } = options;
+    const where: any = {};
+
+    if (status && status !== 'ALL') {
+      where.status = status;
+    }
+
+    if (search) {
+      where.OR = [
+        { registrationNumber: { contains: search } },
+        { make: { contains: search } },
+        { model: { contains: search } },
+      ];
+    }
+
+    if (region && region !== 'ALL') {
+      where.model = { contains: `(${region})` };
+    }
+
+    const total = await prisma.vehicle.count({ where });
+    const data = await prisma.vehicle.findMany({
+      where,
+      orderBy: { [sortBy]: sortOrder },
+      skip,
+      take,
+      include: {
+        documents: true,
+      },
     });
+
+    return { data, total };
   }
 
   async findById(id: string): Promise<Vehicle | null> {

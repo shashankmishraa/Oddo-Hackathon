@@ -8,8 +8,15 @@ const driverRepo = new DriverRepository();
 const prisma = new PrismaClient();
 
 export class DriverService {
-  async listDrivers(status?: string): Promise<Driver[]> {
-    return driverRepo.findAll(status);
+  async listDrivers(options: any) {
+    const { data, total } = await driverRepo.findAll(options);
+    return {
+      data,
+      total,
+      page: options.page,
+      limit: options.limit,
+      totalPages: Math.ceil(total / options.limit),
+    };
   }
 
   async getDriver(id: string): Promise<Driver> {

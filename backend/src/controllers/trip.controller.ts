@@ -3,13 +3,27 @@ import { TripService } from '../services/trip.service';
 import { sendSuccess } from '../utils/response';
 import { TripStatus } from '../constants/enums';
 
+import { parseQueryParams } from '../utils/queryHelper';
+
 const tripService = new TripService();
 
 export const getTrips = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { status } = req.query;
-    const trips = await tripService.getAllTrips(status as TripStatus);
-    return sendSuccess(res, trips, 'Trips retrieved successfully');
+    const parsedOptions = parseQueryParams(req);
+    const result = await tripService.getAllTrips({
+      search: parsedOptions.search,
+      status: parsedOptions.filters.status,
+      vehicleId: parsedOptions.filters.vehicleId,
+      driverId: parsedOptions.filters.driverId,
+      dateRange: parsedOptions.filters.dateRange,
+      sortBy: parsedOptions.sortBy,
+      sortOrder: parsedOptions.sortOrder,
+      skip: parsedOptions.skip,
+      take: parsedOptions.take,
+      page: parsedOptions.page,
+      limit: parsedOptions.limit,
+    });
+    return sendSuccess(res, result, 'Trips retrieved successfully');
   } catch (error) {
     return next(error);
   }

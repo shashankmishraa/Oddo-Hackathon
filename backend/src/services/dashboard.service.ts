@@ -6,22 +6,28 @@ export class DashboardService {
   async getDashboardSummary() {
     const currentYear = new Date().getFullYear();
 
-    // Fetch groupings and lists logs in parallel for performance
+    // Fetch lists in parallel
     const [
       vehicleCounts,
       driverCounts,
       tripCounts,
       fuelLogs,
       expenseLogs,
+      maintenanceLogs,
+      trips,
+      topVehicles,
     ] = await Promise.all([
       dashboardRepo.getVehicleStatusCounts(),
       dashboardRepo.getDriverStatusCounts(),
       dashboardRepo.getTripStatusCounts(),
       dashboardRepo.getYearlyFuelLogs(currentYear),
       dashboardRepo.getYearlyExpenses(currentYear),
+      dashboardRepo.getYearlyMaintenance(currentYear),
+      dashboardRepo.getYearlyTrips(currentYear),
+      dashboardRepo.getTopVehiclesByDistance(5),
     ]);
 
-    // Parse vehicle status counts
+    // Parse vehicle statuses
     let activeVehicles = 0;
     let availableVehicles = 0;
     let vehiclesInShop = 0;
@@ -46,7 +52,7 @@ export class DashboardService {
       }
     });
 
-    // Parse driver status counts
+    // Parse driver statuses
     let driversOnDuty = 0;
     const driverDistribution = { AVAILABLE: 0, ON_TRIP: 0, OFF_DUTY: 0, SUSPENDED: 0 };
 
@@ -59,7 +65,7 @@ export class DashboardService {
       }
     });
 
-    // Parse trip status counts
+    // Parse trip statuses
     let activeTrips = 0;
     let pendingTrips = 0;
     const tripDistribution = { DRAFT: 0, DISPATCHED: 0, COMPLETED: 0, CANCELLED: 0 };
@@ -76,26 +82,70 @@ export class DashboardService {
       }
     });
 
-    // Calculate fleet utilization
+    // Calculate current fleet utilization (percentage)
     const fleetUtilization = activeVehicles > 0 ? (vehiclesOnTrip / activeVehicles) * 100 : 0;
 
-    // Map monthly fuel and expenses
-    const monthlyFuel = Array(12).fill(0);
+    // Monthly data arrays
+    const monthlyFuelCost = Array(12).fill(0);
+    const monthlyFuelLiters = Array(12).fill(0);
     const monthlyExpenses = Array(12).fill(0);
+    const monthlyMaintenance = Array(12).fill(0);
+    const monthlyRevenue = Array(12).fill(0);
+    const monthlyTripCounts = Array(12).fill(0);
 
+    // Populate monthly fuel stats
     fuelLogs.forEach((log) => {
       const month = new Date(log.date).getMonth();
-      monthlyFuel[month] += log.cost;
+      monthlyFuelCost[month] += log.cost;
+      monthlyFuelLiters[month] += log.liters;
     });
 
+    // Populate monthly expenses (direct expense ledger items)
     expenseLogs.forEach((exp) => {
       const month = new Date(exp.date).getMonth();
       monthlyExpenses[month] += exp.amount;
     });
 
-    // Round monthly stats to 2 decimal places
-    const formattedMonthlyFuel = monthlyFuel.map((val) => parseFloat(val.toFixed(2)));
-    const formattedMonthlyExpenses = monthlyExpenses.map((val) => parseFloat(val.toFixed(2)));
+    // Populate monthly maintenance costs
+    maintenanceLogs.forEach((log) => {
+      const month = new Date(log.date).getMonth();
+      monthlyMaintenance[month] += log.cost;
+    });
+
+    // Populate monthly revenue and dispatches count
+    trips.forEach((t) => {
+      const month = new Date(t.departureTime).getMonth();
+      
+      if (t.status === 'COMPLETED' || t.status === 'DISPATCHED') {
+        monthlyTripCounts[month] += 1;
+      }
+
+      if (t.status === 'COMPLETED') {
+        const isHeavy = t.vehicle.make === 'Tata' || t.vehicle.make === 'Ashok Leyland';
+        const ratePerTon = isHeavy ? 4500 : 6000;
+        const revenue = t.cargo * ratePerTon;
+        monthlyRevenue[month] += revenue;
+      }
+    });
+
+    // Compute monthly Combined Expenses (Fuel Cost + Maintenance Cost + Ledger Expenses)
+    const monthlyCombinedExpenses = Array(12).fill(0);
+    for (let m = 0; m < 12; m++) {
+      monthlyCombinedExpenses[m] = monthlyFuelCost[m] + monthlyMaintenance[m] + monthlyExpenses[m];
+    }
+
+    // Compute monthly Fleet Utilization trend (percentage based on trip dispatches vs active vehicles)
+    const monthlyFleetUtilization = Array(12).fill(0);
+    for (let m = 0; m < 12; m++) {
+      if (activeVehicles > 0) {
+        // Dynamic estimate: monthly trips count divided by active fleet scaled down to a realistic percentage factor
+        const util = (monthlyTripCounts[m] / activeVehicles) * 100;
+        monthlyFleetUtilization[m] = parseFloat(Math.min(100, util).toFixed(2));
+      }
+    }
+
+    // Round formatting helper
+    const roundArray = (arr: number[]) => arr.map((val) => parseFloat(val.toFixed(2)));
 
     return {
       kpis: {
@@ -113,8 +163,17 @@ export class DashboardService {
         trips: tripDistribution,
       },
       charts: {
-        monthlyFuel: formattedMonthlyFuel,
-        monthlyExpenses: formattedMonthlyExpenses,
+        monthlyFuel: roundArray(monthlyFuelCost),
+        monthlyExpenses: roundArray(monthlyCombinedExpenses),
+        monthlyRevenue: roundArray(monthlyRevenue),
+        monthlyFuelLiters: roundArray(monthlyFuelLiters),
+        monthlyMaintenance: roundArray(monthlyMaintenance),
+        monthlyFleetUtilization: roundArray(monthlyFleetUtilization),
+        topVehiclesByDistance: topVehicles.map((v) => ({
+          registrationNumber: v.registrationNumber,
+          label: `${v.make} ${v.model.split(' (')[0]}`,
+          distance: v.odometer,
+        })),
       },
     };
   }

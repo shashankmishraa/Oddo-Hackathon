@@ -107,8 +107,8 @@ export const Reports: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Diagnostic Reports</h1>
-          <p className="text-slate-505 mt-1 font-medium">Aggregated operational metrics, ROI diagnostics, and spreadsheet downloads</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Diagnostic Reports</h1>
+          <p className="text-slate-500 dark:text-slate-450 mt-1 font-medium">Aggregated operational metrics, ROI diagnostics, and spreadsheet downloads</p>
         </div>
         <button
           onClick={handleExportCSV}
@@ -121,56 +121,56 @@ export const Reports: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white border border-slate-200 rounded-3xl p-6 flex items-center space-x-4 shadow-sm">
-          <div className="p-3.5 rounded-2xl text-blue-600 bg-blue-50">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 flex items-center space-x-4 shadow-sm">
+          <div className="p-3.5 rounded-2xl text-blue-600 bg-blue-50 dark:bg-blue-950/20 dark:text-blue-400">
             <Gauge size={22} />
           </div>
           <div>
-            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Average Mileage</p>
-            <p className="text-xl font-extrabold text-slate-950 mt-0.5">
+            <p className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Average Mileage</p>
+            <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
               {isLoading ? '...' : (totalMileage / (reportData.length || 1)).toLocaleString(undefined, { maximumFractionDigits: 1 })} Km
             </p>
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-3xl p-6 flex items-center space-x-4 shadow-sm">
-          <div className="p-3.5 rounded-2xl text-amber-600 bg-amber-50">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 flex items-center space-x-4 shadow-sm">
+          <div className="p-3.5 rounded-2xl text-amber-600 bg-amber-50 dark:bg-amber-955/20 dark:text-amber-400">
             <DollarSign size={22} />
           </div>
           <div>
-            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Operations Cost</p>
-            <p className="text-xl font-extrabold text-slate-950 mt-0.5">
+            <p className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Total Operations Cost</p>
+            <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
               {isLoading ? '...' : formatCurrency(totalOpsCost)}
             </p>
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-3xl p-6 flex items-center space-x-4 shadow-sm">
-          <div className="p-3.5 rounded-2xl text-violet-600 bg-violet-50">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 flex items-center space-x-4 shadow-sm">
+          <div className="p-3.5 rounded-2xl text-violet-600 bg-violet-50 dark:bg-violet-950/20 dark:text-violet-405">
             <Compass size={22} />
           </div>
           <div>
-            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Fleet Dispatches</p>
-            <p className="text-xl font-extrabold text-slate-950 mt-0.5">
+            <p className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Total Fleet Dispatches</p>
+            <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
               {isLoading ? '...' : totalDispatches} Completed
             </p>
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-3xl p-6 flex items-center space-x-4 shadow-sm">
-          <div className="p-3.5 rounded-2xl text-emerald-600 bg-emerald-50">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 flex items-center space-x-4 shadow-sm">
+          <div className="p-3.5 rounded-2xl text-emerald-600 bg-emerald-50 dark:bg-emerald-950/20 dark:text-emerald-400">
             <BarChart3 size={22} />
           </div>
           <div>
-            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Average ROI Ratio</p>
-            <p className="text-xl font-extrabold text-slate-950 mt-0.5">
+            <p className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Average ROI Ratio</p>
+            <p className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
               {isLoading ? '...' : `${averageROI.toFixed(2)}x`}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm">
         {isLoading ? (
           <div className="flex h-48 items-center justify-center">
             <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
@@ -179,19 +179,19 @@ export const Reports: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850/40 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                   <th className="px-6 py-4">Vehicle Assets</th>
                   <th className="px-6 py-4">Odometer</th>
                   <th className="px-6 py-4">Fuel Efficiency</th>
                   <th className="px-6 py-4">Trips Count</th>
                   <th className="px-6 py-4">Repair Cost</th>
                   <th className="px-6 py-4">Ledger Expenses</th>
-                  <th className="px-6 py-4 text-emerald-600 font-bold">Operational Cost</th>
-                  <th className="px-6 py-4 text-blue-600 font-bold">Revenue</th>
-                  <th className="px-6 py-4 text-violet-600 font-bold">ROI Score</th>
+                  <th className="px-6 py-4 text-emerald-600 dark:text-emerald-400 font-bold">Operational Cost</th>
+                  <th className="px-6 py-4 text-blue-600 dark:text-blue-400 font-bold">Revenue</th>
+                  <th className="px-6 py-4 text-violet-600 dark:text-violet-400 font-bold">ROI Score</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 text-sm text-slate-650">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-sm text-slate-650 dark:text-slate-350">
                 {reportData.length === 0 ? (
                   <tr>
                     <td colSpan={9} className="px-6 py-12 text-center text-slate-400 font-medium">
@@ -200,26 +200,26 @@ export const Reports: React.FC = () => {
                   </tr>
                 ) : (
                   reportData.map((row) => (
-                    <tr key={row.vehicleId} className="hover:bg-slate-50/80 transition-colors">
+                    <tr key={row.vehicleId} className="hover:bg-slate-50/80 dark:hover:bg-slate-850/40 transition-colors">
                       <td className="px-6 py-4">
-                        <p className="font-mono font-bold text-slate-800">{row.registrationNumber}</p>
-                        <p className="text-xs text-slate-450">{row.make} {row.model.split(' (')[0]}</p>
+                        <p className="font-mono font-bold text-slate-800 dark:text-white">{row.registrationNumber}</p>
+                        <p className="text-xs text-slate-450 dark:text-slate-500">{row.make} {row.model.split(' (')[0]}</p>
                       </td>
                       <td className="px-6 py-4 font-mono">{row.odometer.toLocaleString()} Km</td>
-                      <td className="px-6 py-4 font-mono font-bold text-slate-700">
+                      <td className="px-6 py-4 font-mono font-bold text-slate-700 dark:text-slate-300">
                         {row.fuelEfficiency > 0 ? `${row.fuelEfficiency.toFixed(2)} Km/L` : 'N/A'}
                       </td>
                       <td className="px-6 py-4 font-mono">{row.tripCount} dispatches</td>
                       <td className="px-6 py-4 font-mono">{formatCurrency(row.totalMaintenanceCost)}</td>
                       <td className="px-6 py-4 font-mono">{formatCurrency(row.totalExpenses)}</td>
-                      <td className="px-6 py-4 font-mono font-bold text-emerald-600">
+                      <td className="px-6 py-4 font-mono font-bold text-emerald-600 dark:text-emerald-400">
                         {formatCurrency(row.totalOperationalCost)}
                       </td>
-                      <td className="px-6 py-4 font-mono font-bold text-blue-600">
+                      <td className="px-6 py-4 font-mono font-bold text-blue-600 dark:text-blue-400">
                         {formatCurrency(row.totalRevenue)}
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center space-x-1.5 text-violet-600 font-bold font-mono">
+                        <div className="flex items-center space-x-1.5 text-violet-600 dark:text-violet-400 font-bold font-mono">
                           <FileBarChart size={14} />
                           <span>{row.roi.toFixed(2)}x</span>
                         </div>

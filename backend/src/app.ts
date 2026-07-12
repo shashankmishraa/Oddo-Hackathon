@@ -3,6 +3,7 @@ import cors from 'cors';
 import { config } from './config';
 import { logger } from './utils/logger';
 import { errorHandler } from './middlewares/errorHandler';
+import path from 'path';
 import apiRouter from './routes';
 
 const app = express();
@@ -28,6 +29,7 @@ app.get('/', (req, res) => {
 
 // Mount Base Routers
 app.use('/api', apiRouter);
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -45,8 +47,11 @@ app.use((req, res) => {
 // Global Error Handler
 app.use(errorHandler);
 
+import { ReminderService } from './services/reminder.service';
+
 app.listen(config.port, () => {
   logger.info(`[TransitOps] Architecture Server listening on http://localhost:${config.port}`);
+  ReminderService.startDailyInterval();
 });
 
 export default app;

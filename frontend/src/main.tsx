@@ -16,6 +16,7 @@ import { Maintenance } from './pages/Maintenance';
 import { Fuel } from './pages/Fuel';
 import { Expenses } from './pages/Expenses';
 import { Reports } from './pages/Reports';
+import { canAccessPage } from './utils/rbac';
 import './index.css';
 
 const queryClient = new QueryClient({
@@ -27,106 +28,119 @@ const queryClient = new QueryClient({
   },
 });
 
+// Spinner used while auth is loading
+const Spinner = () => (
+  <div className="flex min-h-screen items-center justify-center bg-[#070913]">
+    <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+  </div>
+);
+
+// Only authenticated users may pass through
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#070913]">
-        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
+  if (loading) return <Spinner />;
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };
 
+// Already logged-in users are bounced to dashboard
 const GuestRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#070913]">
-        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
+  if (loading) return <Spinner />;
   return !isAuthenticated ? <>{children}</> : <Navigate to="/" replace />;
+};
+
+// Page-level RBAC guard: checks canAccessPage and redirects to / if denied
+const RoleGuard: React.FC<{ page: string; children: React.ReactNode }> = ({ page, children }) => {
+  const { user } = useAuth();
+  const role = (user as any)?.role as string | undefined;
+  if (!canAccessPage(role, page)) return <Navigate to="/" replace />;
+  return <>{children}</>;
 };
 
 const router = createBrowserRouter([
   {
     path: '/login',
-    element: (
-      <GuestRoute>
-        <Login />
-      </GuestRoute>
-    ),
+    element: <GuestRoute><Login /></GuestRoute>,
   },
   {
     path: '/register',
-    element: (
-      <GuestRoute>
-        <Register />
-      </GuestRoute>
-    ),
+    element: <GuestRoute><Register /></GuestRoute>,
   },
   {
     path: '/forgot-password',
-    element: (
-      <GuestRoute>
-        <ForgotPassword />
-      </GuestRoute>
-    ),
+    element: <GuestRoute><ForgotPassword /></GuestRoute>,
   },
   {
     path: '/reset-password',
-    element: (
-      <GuestRoute>
-        <ResetPassword />
-      </GuestRoute>
-    ),
+    element: <GuestRoute><ResetPassword /></GuestRoute>,
   },
   {
     path: '/',
-    element: (
-      <PrivateRoute>
-        <DashboardLayout />
-      </PrivateRoute>
-    ),
+    element: <PrivateRoute><DashboardLayout /></PrivateRoute>,
     children: [
       {
         index: true,
-        element: <Dashboard />,
+        element: (
+          <RoleGuard page="dashboard">
+            <Dashboard />
+          </RoleGuard>
+        ),
       },
       {
         path: 'fleet',
-        element: <Fleet />,
+        element: (
+          <RoleGuard page="fleet">
+            <Fleet />
+          </RoleGuard>
+        ),
       },
       {
         path: 'drivers',
-        element: <Drivers />,
+        element: (
+          <RoleGuard page="drivers">
+            <Drivers />
+          </RoleGuard>
+        ),
       },
       {
         path: 'trips',
-        element: <Trips />,
+        element: (
+          <RoleGuard page="trips">
+            <Trips />
+          </RoleGuard>
+        ),
       },
       {
         path: 'maintenance',
-        element: <Maintenance />,
+        element: (
+          <RoleGuard page="maintenance">
+            <Maintenance />
+          </RoleGuard>
+        ),
       },
       {
         path: 'fuel',
-        element: <Fuel />,
+        element: (
+          <RoleGuard page="fuel">
+            <Fuel />
+          </RoleGuard>
+        ),
       },
       {
         path: 'expenses',
-        element: <Expenses />,
+        element: (
+          <RoleGuard page="expenses">
+            <Expenses />
+          </RoleGuard>
+        ),
       },
       {
         path: 'reports',
-        element: <Reports />,
+        element: (
+          <RoleGuard page="reports">
+            <Reports />
+          </RoleGuard>
+        ),
       },
     ],
   },

@@ -66,5 +66,60 @@ export class DashboardRepository {
       },
     });
   }
+
+  async getTopVehiclesByDistance(limit = 5) {
+    return prisma.vehicle.findMany({
+      orderBy: { odometer: 'desc' },
+      take: limit,
+      select: {
+        registrationNumber: true,
+        make: true,
+        model: true,
+        odometer: true,
+      },
+    });
+  }
+
+  async getYearlyTrips(year: number) {
+    const startDate = new Date(`${year}-01-01T00:00:00.000Z`);
+    const endDate = new Date(`${year}-12-31T23:59:59.999Z`);
+
+    return prisma.trip.findMany({
+      where: {
+        departureTime: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+      select: {
+        status: true,
+        cargo: true,
+        departureTime: true,
+        vehicle: {
+          select: {
+            make: true,
+          },
+        },
+      },
+    });
+  }
+
+  async getYearlyMaintenance(year: number) {
+    const startDate = new Date(`${year}-01-01T00:00:00.000Z`);
+    const endDate = new Date(`${year}-12-31T23:59:59.999Z`);
+
+    return prisma.maintenanceLog.findMany({
+      where: {
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+      select: {
+        cost: true,
+        date: true,
+      },
+    });
+  }
 }
 export default DashboardRepository;

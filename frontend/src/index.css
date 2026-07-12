@@ -4,6 +4,39 @@
 
 @layer base {
   :root {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11.2%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11.2%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+
+    --primary: 263 70% 50%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47% 11.2%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47% 11.2%;
+
+    --destructive: 346 84% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 263 70% 50%;
+    --radius: 0.75rem;
+  }
+
+  /* Dark mode variables — scoped to html.dark so Tailwind class toggle works */
+  html.dark {
     --background: 222 47% 6%;
     --foreground: 213 31% 91%;
 
@@ -32,8 +65,6 @@
     --destructive-foreground: 210 40% 98%;
 
     --ring: 263 70% 50%;
-
-    --radius: 0.75rem;
   }
 }
 
@@ -42,6 +73,7 @@ body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
   overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Custom modern scrollbars */
@@ -61,4 +93,27 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--primary));
+}
+
+@media print {
+  body {
+    background-color: white !important;
+    color: #000000 !important;
+  }
+  aside, header, button, .print-hidden {
+    display: none !important;
+  }
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    background-color: white !important;
+  }
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+  th, td {
+    padding: 8px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+  }
 }

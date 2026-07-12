@@ -1,4 +1,4 @@
-export type Role = 'ADMIN' | 'DISPATCHER' | 'DRIVER' | 'VIEWER';
+export type Role = 'ADMIN' | 'DISPATCHER' | 'SAFETY_OFFICER' | 'FINANCIAL_ANALYST' | 'DRIVER';
 export type VehicleStatus = 'ACTIVE' | 'MAINTENANCE' | 'INACTIVE';
 export type DriverStatus = 'AVAILABLE' | 'ON_TRIP' | 'OFF_DUTY';
 export type TripStatus = 'SCHEDULED' | 'EN_ROUTE' | 'COMPLETED' | 'CANCELLED';

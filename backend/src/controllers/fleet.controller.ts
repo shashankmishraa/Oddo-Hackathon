@@ -3,13 +3,25 @@ import { VehicleService } from '../services/vehicle.service';
 import { sendSuccess } from '../utils/response';
 import { VehicleStatus } from '../constants/enums';
 
+import { parseQueryParams } from '../utils/queryHelper';
+
 const vehicleService = new VehicleService();
 
 export const getVehicles = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { status } = req.query;
-    const vehicles = await vehicleService.getAllVehicles(status as VehicleStatus);
-    return sendSuccess(res, vehicles, 'Vehicles retrieved successfully');
+    const parsedOptions = parseQueryParams(req);
+    const result = await vehicleService.getAllVehicles({
+      search: parsedOptions.search,
+      status: parsedOptions.filters.status,
+      region: parsedOptions.filters.region,
+      sortBy: parsedOptions.sortBy,
+      sortOrder: parsedOptions.sortOrder,
+      skip: parsedOptions.skip,
+      take: parsedOptions.take,
+      page: parsedOptions.page,
+      limit: parsedOptions.limit,
+    });
+    return sendSuccess(res, result, 'Vehicles retrieved successfully');
   } catch (error) {
     return next(error);
   }

@@ -7,8 +7,15 @@ const prisma = new PrismaClient();
 const tripRepo = new TripRepository();
 
 export class TripService {
-  async getAllTrips(status?: string): Promise<Trip[]> {
-    return tripRepo.findAll(status);
+  async getAllTrips(options: any) {
+    const { data, total } = await tripRepo.findAll(options);
+    return {
+      data,
+      total,
+      page: options.page,
+      limit: options.limit,
+      totalPages: Math.ceil(total / options.limit),
+    };
   }
 
   async getTripDetails(id: string): Promise<Trip> {

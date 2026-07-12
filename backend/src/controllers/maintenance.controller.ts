@@ -2,12 +2,26 @@ import { Request, Response, NextFunction } from 'express';
 import { MaintenanceService } from '../services/maintenance.service';
 import { sendSuccess } from '../utils/response';
 
+import { parseQueryParams } from '../utils/queryHelper';
+
 const maintenanceService = new MaintenanceService();
 
 export const getMaintenanceLogs = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const logs = await maintenanceService.getAllLogs();
-    return sendSuccess(res, logs, 'Maintenance logs retrieved successfully');
+    const parsedOptions = parseQueryParams(req);
+    const result = await maintenanceService.getAllLogs({
+      search: parsedOptions.search,
+      status: parsedOptions.filters.status,
+      vehicleId: parsedOptions.filters.vehicleId,
+      dateRange: parsedOptions.filters.dateRange,
+      sortBy: parsedOptions.sortBy,
+      sortOrder: parsedOptions.sortOrder,
+      skip: parsedOptions.skip,
+      take: parsedOptions.take,
+      page: parsedOptions.page,
+      limit: parsedOptions.limit,
+    });
+    return sendSuccess(res, result, 'Maintenance logs retrieved successfully');
   } catch (error) {
     return next(error);
   }
