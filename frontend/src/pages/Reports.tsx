@@ -18,7 +18,8 @@ interface ReportItem {
   totalExpenses: number;
   totalOperationalCost: number;
   totalCargoDelivered: number;
-  roi: number; // Cargo / Cost
+  totalRevenue: number;
+  roi: number; // Revenue / Operational Cost
 }
 
 export const Reports: React.FC = () => {
@@ -47,8 +48,9 @@ export const Reports: React.FC = () => {
       'Total Maintenance Cost (₹)',
       'Total Expenses (₹)',
       'Total Operational Cost (₹)',
-      'Total Cargo Units Delivered',
-      'ROI Ratio (Cargo/₹)'
+      'Total Cargo Units Delivered (Tons)',
+      'Total Revenue (₹)',
+      'ROI Ratio (Revenue/Cost)'
     ];
 
     const rows = reportData.map((i) => [
@@ -65,6 +67,7 @@ export const Reports: React.FC = () => {
       i.totalExpenses,
       i.totalOperationalCost,
       i.totalCargoDelivered,
+      i.totalRevenue,
       i.roi.toFixed(2)
     ]);
 
@@ -161,7 +164,7 @@ export const Reports: React.FC = () => {
           <div>
             <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Average ROI Ratio</p>
             <p className="text-xl font-extrabold text-slate-950 mt-0.5">
-              {isLoading ? '...' : averageROI.toFixed(2)} Cargo/₹
+              {isLoading ? '...' : `${averageROI.toFixed(2)}x`}
             </p>
           </div>
         </div>
@@ -184,13 +187,14 @@ export const Reports: React.FC = () => {
                   <th className="px-6 py-4">Repair Cost</th>
                   <th className="px-6 py-4">Ledger Expenses</th>
                   <th className="px-6 py-4 text-emerald-600 font-bold">Operational Cost</th>
+                  <th className="px-6 py-4 text-blue-600 font-bold">Revenue</th>
                   <th className="px-6 py-4 text-violet-600 font-bold">ROI Score</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 text-sm text-slate-650">
                 {reportData.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="px-6 py-12 text-center text-slate-400 font-medium">
+                    <td colSpan={9} className="px-6 py-12 text-center text-slate-400 font-medium">
                       No active reports available.
                     </td>
                   </tr>
@@ -211,10 +215,13 @@ export const Reports: React.FC = () => {
                       <td className="px-6 py-4 font-mono font-bold text-emerald-600">
                         {formatCurrency(row.totalOperationalCost)}
                       </td>
+                      <td className="px-6 py-4 font-mono font-bold text-blue-600">
+                        {formatCurrency(row.totalRevenue)}
+                      </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-1.5 text-violet-600 font-bold font-mono">
                           <FileBarChart size={14} />
-                          <span>{row.roi.toFixed(2)}</span>
+                          <span>{row.roi.toFixed(2)}x</span>
                         </div>
                       </td>
                     </tr>

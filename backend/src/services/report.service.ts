@@ -16,7 +16,8 @@ export interface ReportItem {
   totalExpenses: number;
   totalOperationalCost: number;
   totalCargoDelivered: number;
-  roi: number; // Cargo / Cost
+  totalRevenue: number;
+  roi: number; // Revenue / Operational Cost
 }
 
 export class ReportService {
@@ -53,7 +54,15 @@ export class ReportService {
         .filter((t) => t.status === 'COMPLETED')
         .reduce((sum, t) => sum + t.cargo, 0);
 
-      const roi = totalOperationalCost > 0 ? totalCargoDelivered / totalOperationalCost : 0;
+      // Define standard tariff cargo rates:
+      // Heavy trailers/containers (e.g. Tata Prima, Ashok Leyland) ➔ ₹4,500 per Ton
+      // Medium trucks/pickups/mini trucks/vans ➔ ₹6,000 per Ton
+      const isHeavy = v.make === 'Tata' || v.make === 'Ashok Leyland';
+      const ratePerTon = isHeavy ? 4500 : 6000;
+      const totalRevenue = totalCargoDelivered * ratePerTon;
+
+      // ROI = Revenue generated divided by operational cost
+      const roi = totalOperationalCost > 0 ? totalRevenue / totalOperationalCost : 0;
 
       return {
         vehicleId: v.id,
@@ -69,6 +78,7 @@ export class ReportService {
         totalExpenses: parseFloat(totalExpenses.toFixed(2)),
         totalOperationalCost: parseFloat(totalOperationalCost.toFixed(2)),
         totalCargoDelivered,
+        totalRevenue: parseFloat(totalRevenue.toFixed(2)),
         roi: parseFloat(roi.toFixed(2)),
       };
     });
@@ -82,14 +92,15 @@ export class ReportService {
       'Model',
       'Current Mileage (Km)',
       'Total Fuel (Liters)',
-      'Total Fuel Cost ($)',
+      'Total Fuel Cost (₹)',
       'Fuel Efficiency (Km/L)',
       'Total Trips Completed',
-      'Total Maintenance Cost ($)',
-      'Total Expenses ($)',
-      'Total Operational Cost ($)',
-      'Total Cargo Units Delivered',
-      'ROI Ratio (Cargo/Cost)',
+      'Total Maintenance Cost (₹)',
+      'Total Expenses (₹)',
+      'Total Operational Cost (₹)',
+      'Total Cargo Units Delivered (Tons)',
+      'Total Revenue (₹)',
+      'ROI Ratio (Revenue/Cost)',
     ];
 
     const rows = items.map((i) => [
@@ -106,6 +117,7 @@ export class ReportService {
       i.totalExpenses,
       i.totalOperationalCost,
       i.totalCargoDelivered,
+      i.totalRevenue,
       i.roi,
     ]);
 
